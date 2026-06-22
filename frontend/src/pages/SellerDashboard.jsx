@@ -11,8 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
-import { uploadsBase } from '../services/api';
+import api, { getImageUrl } from '../services/api';
 
 const MAX_LABEL_LEN = 14;
 const truncate = (s) => (s && s.length > MAX_LABEL_LEN ? s.slice(0, MAX_LABEL_LEN) + '…' : s || '—');
@@ -57,7 +56,7 @@ export default function SellerDashboard() {
 
   const AuctionCard = ({ a }) => {
     const item = a.item || {};
-    const imageUrl = item.image ? `${uploadsBase}/${item.image}` : `https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=300&fit=crop`;
+    const imageUrl = getImageUrl(item.image) ?? `https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=300&fit=crop`;
     return (
       <Link to={`/auction/${a._id}`} className="card card-auction animate-slide-up">
         <img src={imageUrl} alt={item.name} className="auction-card-image" />

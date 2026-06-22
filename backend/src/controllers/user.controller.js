@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const ApiError = require('../utils/ApiError');
+const { getImagePath } = require('../middleware/multer');
 
 const userResponse = (u) => ({
   _id: u._id,
@@ -30,7 +31,7 @@ exports.updateProfile = async (req, res, next) => {
     if (mobile !== undefined) updates.mobile = mobile === '' ? null : String(mobile).trim();
     if (address !== undefined) updates.address = address === '' ? null : String(address).trim();
     if (age !== undefined) updates.age = age === '' || age == null ? null : Number(age) || null;
-    if (req.file) updates.avatar = `uploads/avatars/${req.file.filename}`;
+    if (req.file) updates.avatar = getImagePath(req.file, 'avatars');
 
     if (currentPassword != null && currentPassword !== '' && newPassword != null && newPassword !== '') {
       const userWithPass = await User.findById(req.user._id).select('+password');

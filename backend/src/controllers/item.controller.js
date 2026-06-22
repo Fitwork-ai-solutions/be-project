@@ -1,11 +1,12 @@
 const Item = require('../models/item.model');
 const ApiError = require('../utils/ApiError');
+const { getImagePath } = require('../middleware/multer');
 
 exports.create = async (req, res, next) => {
   try {
     const { name, description, category } = req.body;
     if (!name || !category) throw new ApiError(400, 'Name and category are required');
-    const imagePath = req.file ? `uploads/items/${req.file.filename}` : null;
+    const imagePath = getImagePath(req.file, 'items');
     const item = await Item.create({
       name,
       description: description || '',

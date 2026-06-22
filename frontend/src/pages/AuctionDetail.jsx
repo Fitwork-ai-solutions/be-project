@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAuctionRoom } from '../hooks/useAuctionRoom';
-import api, { uploadsBase } from '../services/api';
+import api, { getImageUrl } from '../services/api';
 
 export default function AuctionDetail() {
   const { id } = useParams();
@@ -199,7 +199,7 @@ export default function AuctionDetail() {
   if (loading || !auction) return <div className="page loading">Loading auction...</div>;
 
   const item = auction.item || {};
-  const imageUrl = item.image ? `${uploadsBase}/${item.image}` : 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&h=500&fit=crop';
+  const imageUrl = getImageUrl(item.image) ?? 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&h=500&fit=crop';
 
   // Current highest bidder cannot place the next bid – someone else must bid first
   const currentHighestBidderId = latestBid?.bidder?._id?.toString() ?? latestBid?.bidder?.toString?.() ?? null;

@@ -17,3 +17,10 @@ api.interceptors.request.use((config) => {
 
 export default api;
 export const uploadsBase = baseURL;
+
+// Handles both Cloudinary full URLs and local relative paths
+export function getImageUrl(imagePath) {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
+  return `${uploadsBase}/${imagePath}`;
+}

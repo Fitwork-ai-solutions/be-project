@@ -42,13 +42,16 @@ export function useAuctionRoom(auctionId) {
     };
     const onPrice = (payload) => setCurrentPrice(payload.currentPrice);
     const onError = (payload) => setBidError(payload.message || 'Bid failed');
+    const onEnded = () => setEnded(true);
     s.on('bid:new', onBid);
     s.on('auction:price', onPrice);
     s.on('bid_error', onError);
+    s.on('auction:ended', onEnded);
     return () => {
       s.off('bid:new', onBid);
       s.off('auction:price', onPrice);
       s.off('bid_error', onError);
+      s.off('auction:ended', onEnded);
     };
   }, [auctionId, token]);
 
