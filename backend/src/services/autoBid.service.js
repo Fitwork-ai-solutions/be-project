@@ -22,7 +22,8 @@ async function processAutoBids(auctionId, io) {
     .sort({ maxAmount: -1, createdAt: 1 });
 
   let changed = true;
-  while (changed) {
+  let iterations = 0;
+  while (changed && iterations++ < 100) {
     changed = false;
     auction = await Auction.findById(auctionId);
     if (now > auction.endTime) break;

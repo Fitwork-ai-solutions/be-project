@@ -10,6 +10,7 @@ export default function UpdateProfile() {
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
   const [age, setAge] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -56,6 +57,7 @@ export default function UpdateProfile() {
       formData.append('mobile', mobile);
       formData.append('address', address);
       formData.append('age', age);
+      if (avatarFile) formData.append('avatar', avatarFile);
       if (currentPassword) formData.append('currentPassword', currentPassword);
       if (newPassword) formData.append('newPassword', newPassword);
 
@@ -97,6 +99,17 @@ export default function UpdateProfile() {
             <div className="form-group">
               <label>Age <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>(optional)</span></label>
               <input type="number" min={1} max={150} value={age} onChange={(e) => setAge(e.target.value)} placeholder="e.g. 25" />
+            </div>
+            <div className="form-group">
+              <label>Profile picture <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>(optional)</span></label>
+              {user?.avatar && (
+                <img
+                  src={user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${user.avatar}`}
+                  alt="Current avatar"
+                  style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', marginBottom: '0.5rem', display: 'block' }}
+                />
+              )}
+              <input type="file" accept="image/*" onChange={(e) => setAvatarFile(e.target.files[0] || null)} />
             </div>
 
             <div className="submit-block" style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>

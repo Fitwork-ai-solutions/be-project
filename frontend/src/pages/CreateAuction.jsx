@@ -103,7 +103,7 @@ export default function CreateAuction() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Base price (₹)</label>
+                  <label>Base price (Rs)</label>
                   <input
                     type="number"
                     min="0"
@@ -115,7 +115,7 @@ export default function CreateAuction() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Min bid increment (₹)</label>
+                  <label>Min bid increment (Rs)</label>
                   <input
                     type="number"
                     min="1"

@@ -50,6 +50,10 @@ function initSocket(server) {
           socket.emit('bid_error', { message: 'Auction not found' });
           return;
         }
+        if (auction.status === 'ended') {
+          socket.emit('bid_error', { message: 'Auction has ended' });
+          return;
+        }
         const now = new Date();
         if (now < auction.startTime) {
           socket.emit('bid_error', { message: 'Auction has not started' });

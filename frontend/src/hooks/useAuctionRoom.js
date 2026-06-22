@@ -11,6 +11,7 @@ export function useAuctionRoom(auctionId) {
   const [countdownEnd, setCountdownEnd] = useState(null);
   const [bidError, setBidError] = useState('');
   const [ended, setEnded] = useState(false);
+  const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newBidTimestamp, setNewBidTimestamp] = useState(0);
 
@@ -42,7 +43,10 @@ export function useAuctionRoom(auctionId) {
     };
     const onPrice = (payload) => setCurrentPrice(payload.currentPrice);
     const onError = (payload) => setBidError(payload.message || 'Bid failed');
-    const onEnded = () => setEnded(true);
+    const onEnded = (payload) => {
+      setEnded(true);
+      if (payload?.winner) setWinner(payload.winner);
+    };
     s.on('bid:new', onBid);
     s.on('auction:price', onPrice);
     s.on('bid_error', onError);
@@ -67,6 +71,7 @@ export function useAuctionRoom(auctionId) {
     countdownEnd,
     bidError,
     ended,
+    winner,
     loading,
     placeBid,
     setEnded,

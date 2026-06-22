@@ -12,6 +12,7 @@ export default function AuctionDetail() {
     countdownEnd,
     bidError,
     ended,
+    winner: socketWinner,
     loading,
     placeBid,
     setEnded,
@@ -112,7 +113,10 @@ export default function AuctionDetail() {
   const handleAutoBid = async (e) => {
     e.preventDefault();
     const max = Number(autoBidMax);
-    if (!max || max < minBid) return;
+    if (!max || max < minBid) {
+      setAutoBidError(`Max amount must be at least Rs ${minBid} (current price + increment).`);
+      return;
+    }
     setAutoBidError('');
     setAutoBidDone('');
     try {
@@ -243,7 +247,24 @@ export default function AuctionDetail() {
                 </span>
               </p>
             )}
-            {ended && <p className="msg-error" style={{ marginTop: '0.5rem' }}>Auction ended. No more bids.</p>}
+            {ended && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <p className="msg-error" style={{ marginBottom: '0.35rem' }}>Auction ended. No more bids.</p>
+                {(() => {
+                  const w = socketWinner || auction?.winner;
+                  return w ? (
+                    <p style={{ color: 'var(--accent-light)', fontWeight: 600, margin: 0 }}>
+                      Winner: {w.name || w.email}
+                    </p>
+                  ) : null;
+                })()}
+              </div>
+            )}
+            {auction?.status === 'scheduled' && !ended && (
+              <p style={{ marginTop: '0.5rem', color: 'var(--gold)', fontWeight: 600 }}>
+                Starts at: {new Date(auction.startTime).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+              </p>
+            )}
           </div>
         </div>
 

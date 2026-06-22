@@ -45,8 +45,13 @@ exports.list = async (req, res, next) => {
   try {
     const { status, category, trending, seller } = req.query;
     const filter = {};
-    if (category) filter['item.category'] = category;
     if (seller) filter.seller = seller;
+
+    // Resolve category → item IDs at DB level (item is an ObjectId ref, not a subdoc)
+    if (category) {
+      const itemIds = await Item.find({ category }).select('_id').lean().then((r) => r.map((i) => i._id));
+      filter.item = { $in: itemIds };
+    }
 
     const auctions = await Auction.find(filter)
       .populate({ path: 'item', populate: { path: 'category', select: 'name slug' } })
@@ -63,7 +68,12 @@ exports.list = async (req, res, next) => {
     });
     let result = withStatus;
     if (status) result = result.filter((a) => a.status === status);
-    if (category) result = result.filter((a) => a.item && a.item.category?._id?.toString() === category);
+
+    // Trending: sort by price increase (currentPrice - basePrice) descending
+    if (trending && !status && !category) {
+      result = result.sort((a, b) => (b.currentPrice - b.basePrice) - (a.currentPrice - a.basePrice));
+    }
+
     res.json({ auctions: result });
   } catch (err) {
     next(err);
