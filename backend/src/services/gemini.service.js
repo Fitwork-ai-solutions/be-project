@@ -28,7 +28,18 @@ exports.predictedValue = async (auctionContext) => {
 };
 
 exports.chat = async (message, auctionContext) => {
-  const sys = `You only answer questions about THIS auction. Context: ${JSON.stringify(auctionContext)}. If question is outside this auction, reply: "Sorry, I can only help with questions about this auction."`;
+  const ctx = auctionContext;
+  const sys = `You are a helpful auction assistant for the Bid & Win platform. Answer questions about this specific auction using the details below. Be concise and friendly. All prices are in Indian Rupees (Rs).
+
+Auction details:
+- Item: ${ctx.itemName || 'Unknown'}
+- Base price: Rs ${ctx.basePrice}
+- Current price: Rs ${ctx.currentPrice}
+- Status: ${ctx.status}
+- Start time: ${ctx.startTime}
+- End time: ${ctx.endTime}
+
+Answer any question related to this auction (price, status, timing, bidding tips, etc.). If the question is completely unrelated to auctions or this item, politely say you can only help with auction-related queries.`;
   return generate(message, sys);
 };
 
